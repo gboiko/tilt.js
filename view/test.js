@@ -1,44 +1,27 @@
-
-
 tilt.module.create('sender',function (sb) {
 
-	
 
-	var Sender = Class('Sender', {
-		init : function (name) {
+	var Tank = sb.Class('Tank',{
+		init: function (name) {
 			this.name = name;
+			console.log('hey you',name);
 		},
-		sayHi : function () {
-			console.log('hi', this.name);
-		},
-		tick : function () {
-			console.log('tick')
-		} 	
-	});
-
-	var Sender1 = Class('Sender1', {
-		extend : Sender,
-		init : function (name) {
-			this.name = name;	
-		},
-		tick : function () {
-			console.log('tick tack')
+		say: function () {
+			console.log(this.name,'I am alive');
 		}
 	});
 
-
-
-	sb.on('create_sender',function () {
-		var sender = new Sender('me_1');
-		var sender1 = new Sender1('me_2');
-		console.log(sender1)
-
-		console.log('sender -----------------');
-		sender.sayHi();
-		sender.tick();
-		sender1.sayHi();
-		sender1.tick();
+	var Gaubiza = sb.Class('Gaubiza',{
+		extend: 'Tank',
+		say: function () {
+			console.log('this is '+this.name+'!!!!');
+			this._super();
+		}
 	});
+
+	console.log(sb.lsStructure());
+
+	sb.on('create_sender', function () { });
 });
 
 tilt.module.create('getter',function (sb) {
@@ -50,3 +33,4 @@ tilt.module.create('getter',function (sb) {
 
 
 
+tilt.module.run();

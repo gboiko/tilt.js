@@ -1,4 +1,4 @@
-(function (titl) {
+(function (tilt) {
 	tilt.module = (function () {
 
 		var register = {},
@@ -14,7 +14,7 @@
 				return this.execute_all();
 			},
 			execute_one : function (name) {
-				modules[name] = register[name](tilt.sandbox(tilt));
+				modules[name] = register[name](tilt.sandbox(tilt,name));
 				delete register[name];
 				return this;
 			},

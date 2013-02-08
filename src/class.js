@@ -1,81 +1,41 @@
-Function.prototype.method = function (name, func) {
-    this.prototype[name] = func;
-    return this;
-};
+/* Simple JavaScript Inheritance
+ * By John Resig http://ejohn.org/
+ * MIT Licensed.
+ */
+// Inspired by base2 and Prototype
+(function(tilt){
+  var initializing = false, fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
 
-Function.prototype.methods = function (methods) {
-    for (var name in methods) {
-        this.method(name,methods[name])
+  tilt.Class = function(){};
+  tilt.Class.extend = function(prop) {
+    var _super = this.prototype;
+    initializing = true;
+    var prototype = new this();
+    initializing = false;
+    for (var name in prop) {
+      prototype[name] = typeof prop[name] == "function" &&
+        typeof _super[name] == "function" && fnTest.test(prop[name]) ?
+        (function(name, fn){
+          return function() {
+            var tmp = this._super;
+            this._super = _super[name];
+            var ret = fn.apply(this, arguments);        
+            this._super = tmp;           
+            return ret;
+          };
+        })(name, prop[name]) :
+        prop[name];
     }
-}
-
-Function.method('extend', function (parent) {
-    this.prototype = new parent();
-    var d = {}, 
-        p = this.prototype;
-    this.prototype.constructor = parent; 
-    this.method('super', function _super(name) {
-        if (!(name in d)) {
-            d[name] = 0;
-        }        
-        var f, r, t = d[name], v = parent.prototype;
-        if (t) {
-            while (t) {
-                v = v.constructor.prototype;
-                t -= 1;
-            }
-            f = v[name];
-        } else {
-            f = p[name];
-            if (f == this[name]) {
-                f = v[name];
-            }
-        }
-        d[name] += 1;
-        r = f.apply(this, Array.prototype.slice.apply(arguments, [1]));
-        d[name] -= 1;
-        return r;
-    });
-    return this;
-});
-
-Function.method('addons', function (parent) {
-    for (var i = 1; i < arguments.length; i += 1) {
-        var name = arguments[i];
-        this.prototype[name] = parent.prototype[name];
+   
+    function Class() {
+      if ( !initializing && this.init )
+        this.init.apply(this, arguments);
     }
-    return this;
-});
-
-
-Class = function (name, prop) {
-    
-    var prop = prop || {},
-        initialize = prop.init || false,
-        extend = prop.extend || false,
-        fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
-
-    if (initialize) 
-        delete prop.init;
-
-    if (extend)
-        delete prop.extend;
-
-    function Class () {
-        if (initialize)
-            initialize.apply(this, arguments);
-    }
-
-    Class.prototype = prop;
-
-    if (extend) {
-        var parent_prop = extend.prototype;
-        for (var name in parent_prop) {
-            if (!prop[name]) 
-                prop[name] = parent_prop[name]
-      }
-    }
-    
+   
+    Class.prototype = prototype;
+    Class.prototype.constructor = Class;
+    Class.extend = arguments.callee;
+   
     return Class;
-}
-
+  };
+})(window.tilt);
