@@ -81,8 +81,10 @@
 
 	})();
 
-	Events = new Events();
+	tilt._Events = Events;
 
+	Events = new Events();
+	
 	tilt.on = tilt.utils.bind(Events.on,Events);
 	tilt.emit = tilt.utils.bind(Events.emit,Events);
 	tilt.off = tilt.utils.bind(Events.off,Events);

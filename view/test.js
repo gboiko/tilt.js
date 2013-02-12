@@ -21,6 +21,40 @@ tilt.module.create('sender',function (sb) {
 
 	console.log(sb.lsStructure());
 
+	
+
+	/*
+	var view = sb.View('homePage');
+	
+	view.render(context);
+	view.delete();
+
+	
+	var model = sb.Model.create(
+			'programList',
+			['title','name','uid','sample'],
+			[[1,2,3,4],[2,3,4,5],[2,3,4,5]]
+		);
+
+	model.getAll();
+
+	model.getTitle();
+
+	model.getName();
+
+	model.getMaxTitle();
+
+	model.getMinTitle();
+
+	model.findAll([['name',1]]);
+
+	model.find(['name',1],5);
+
+	model.assosiate('programUser','title');
+
+	*/
+
+
 	sb.on('create_sender', function () { });
 });
 

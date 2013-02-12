@@ -1,4 +1,5 @@
 (function (parent) {
+
 	parent.tilt = parent.titl || {};
 	tilt = parent.tilt;
 
@@ -18,6 +19,8 @@
         }
     };
 	
+	tilt.utils.hasProp = {}.hasOwnProperty;
+
 	tilt.utils.mixin = function (object) {
 		var mixins = Array.prototype.slice.call(arguments, 1);
 	    for (var i = 0; i < mixins.length; ++i)
@@ -81,6 +84,22 @@
     tilt.utils.isString = function (str) {
         return toString.call(str) == '[object String]';
     };
+
+
+	String.prototype.capitalize = function () {
+	    return this.charAt(0).toUpperCase() + this.slice(1);
+	};
+
+	Object.prototype.length = function () {
+		var count = 0;
+		for (var property in this) { 
+			if (tilt.utils.hasProp.call(this, property)){
+				count++
+			}
+		};
+		return count;
+	};
+
 
 	tilt.sandbox = function (tilt,name) {
 
