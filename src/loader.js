@@ -11,14 +11,62 @@
 
         var BaseLoader = tilt.Class.extend({
             init: function (info) {
+                queue[info.event_name];
                 this.info = info;
                 _on('start',_bind(this.start,this));
-            }
+            },
             ready: function (data) {
-                _emit('ready',[data,this.name])
+                _emit('ready',[data,this.info])
             } 
-        })
-      
+        });
+
+        var JSONLoader = BaseLoader.extend({
+            start: function () {
+                var self = this;
+                tilt.$.getJSON(self.info.url,function(data){
+                    self.ready(data);
+                });
+            }
+        });      
+
+        var TemplateLoader = BaseLoader.extend({
+            start: function () {
+                var self = this;
+                tilt.$.getJSON(self.info.url,function(data){
+                    tilt.View.create(self.info.name,data);    
+                    self.ready(false);   
+                });
+            }
+        });      
+
+        var ImageLoader = BaseLoader.extend({
+            start: function () {
+                var self = this,
+                    img = $('<img/>');
+                img[0].src = self.url+'?_='+(+new Date());
+                img.load(function () {
+                    self.ready(false);
+                });
+            }
+        });
+
+        var EventCatcher = BaseLoader.extend({
+            start: function () {
+                var self = this;
+                tilt.on(self.info.name,function (data){
+                    self.ready(data);
+                });
+            }
+        });
+
+        var EventWaiter = BaseLoader.extend({
+            start: function () {
+                var self = this;
+                tilt.on(self.info.name,function (){
+                    self.ready();
+                });
+            }
+        });
 
         var Loader = tilt.Class.extend({
             init: function () {
@@ -62,7 +110,7 @@
                 };
                 new EventWaiter(obj);
             },  
-            add_callback: function (cb,start) {
+            addCallback: function (cb,start) {
                 _on('fire_callback',function (data) {
                     cb(data)
                 });
@@ -76,9 +124,11 @@
             start: function () {
                 _emit('start');
             },
-            ready: function (name,data) {
-                delete queue[name];
-                this.data[name] = data;
+            ready: function (info) {
+                delete queue[info[1].event_name];
+                if (info[0]) {
+                    this.data[info[1].name] = info[0];
+                }
                 if (queue.length == 0) {
                     _emit('fire_callback',this.data);
                 }

@@ -19,9 +19,13 @@ tilt.module.create('sender',function (sb) {
 		}
 	});
 
-	console.log(sb.lsStructure());
+	var MainContentLoader = new tilt.loader();
 
-	
+	MainContentLoader.loadJson('/tilt.js/view/data/test.json');
+	MainContentLoader.addCallback(function (data) {
+		console.log(data);
+	});
+	MainContentLoader.start();
 
 	/*
 	var view = sb.View('homePage');
